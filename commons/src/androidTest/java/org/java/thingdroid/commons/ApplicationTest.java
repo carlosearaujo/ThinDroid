@@ -1,4 +1,4 @@
-package org.java.thingdroid.commons;
+package br.com.thindroid.commons;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

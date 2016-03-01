@@ -22,14 +22,14 @@ ext {
     bintrayRepo = 'maven'
     bintrayName = 'commons'
 
-    publishedGroupId = 'org.java.thingdroid'
-    libraryName = 'ThingDroid Commons'
+    publishedGroupId = 'br.com.thindroid'
+    libraryName = 'ThinDroid Commons'
     artifact = 'commons'
 
-    libraryDescription = 'ThingDroid Commons'
+    libraryDescription = 'ThinDroid Commons'
 
-    siteUrl = 'https://github.com/carlosedinazioaraujo/thingdroid-commons'
-    gitUrl = 'https://github.com/carlosedinazioaraujo/thingdroid-commons'
+    siteUrl = 'http://thindroid.com.br'
+    gitUrl = 'https://github.com/carlosedinazioaraujo/ThinDroid'
 
     libraryVersion = '1.0.0'
 

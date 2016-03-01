@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.java.thingdroid" >
+    package="br.com.thindroid" >
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme"
+        android:name=".Application">
         <activity
-            android:name=".Tests"
+            android:name=".ActivityTests"
             android:label="@string/title_activity_tests"
             android:theme="@style/AppTheme.NoActionBar" >
             <intent-filter>

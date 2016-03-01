@@ -1,4 +1,4 @@
-package org.java.thingdroid;
+package br.com.thindroid;
 
 import org.junit.Test;
 

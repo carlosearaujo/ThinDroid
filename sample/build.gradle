@@ -6,7 +6,7 @@ android {
     buildToolsVersion "23.0.2"
 
     defaultConfig {
-        applicationId "org.java.thingdroid"
+        applicationId "br.com.thindroid"
         minSdkVersion 10
         targetSdkVersion 23
         versionCode 1
@@ -25,6 +25,6 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.2.0'
     compile 'com.android.support:design:23.2.0'
-    compile project(':annotations')
     apt project(':annotations-compiler')
+    compile('br.com.thindroid:commons:1.0.0')
 }

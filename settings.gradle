@@ -1,1 +1,1 @@
-include ':annotations'
+include ':annotations', ':annotations-compiler', ':commons', ':sample'
