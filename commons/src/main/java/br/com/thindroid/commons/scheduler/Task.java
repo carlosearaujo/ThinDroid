@@ -2,36 +2,38 @@ package br.com.thindroid.commons.scheduler;
 
 import android.util.Log;
 
-import br.com.thindroid.AlarmTask;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Method;
+import br.com.thindroid.AlarmTask;
 
 /**
  * Created by Carlos on 23/02/2016.
  */
 class Task implements Serializable{
 
-
     private static final String TAG = Task.class.getSimpleName();
-
-    public Task(Method method, AlarmTask alarmTask, String taskAction)  {
-        this.method = method;
-        this.alarmTask = alarmTask;
-        this.taskAction = taskAction;
-        this.methodName = method.getName();
-        this.className = getTargetClass();
-    }
 
     private String methodName;
     private String className;
     Method method;
     Class clazz;
-    AlarmTask alarmTask;
+    long alarmInterval;
+    boolean wakeUp;
     String taskAction;
+    long maxLazyWait;
+
+    public Task(Method method, AlarmTask alarmTask, String taskAction)  {
+        this.method = method;
+        alarmInterval = alarmTask.interval();
+        this.wakeUp = alarmTask.wakeUp();
+        this.taskAction = taskAction;
+        this.maxLazyWait = alarmTask.maxLazyWait();
+        this.methodName = method.getName();
+        this.className = getTargetClass();
+    }
 
     private Task() {
 
