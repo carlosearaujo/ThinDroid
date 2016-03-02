@@ -117,11 +117,11 @@ public class Scheduler extends WakefulBroadcastReceiver {
     private static void scheduleTask(AlarmManager alarmManager, Task task, boolean forceWakeUp) {
         Intent intent = buildAlarmIntent(task);
         PendingIntent alarmIntent = PendingIntent.getBroadcast(getContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        alarmManager.setRepeating(getAlarmType(task, forceWakeUp), SystemClock.elapsedRealtime(), task.alarmTask.interval(), alarmIntent);
+        alarmManager.setRepeating(getAlarmType(task, forceWakeUp), SystemClock.elapsedRealtime(), task.alarmInterval, alarmIntent);
     }
 
     private static int getAlarmType(Task task, boolean forceWakeUp) {
-        return task.alarmTask.wakeUp() || forceWakeUp ? AlarmManager.ELAPSED_REALTIME_WAKEUP : AlarmManager.ELAPSED_REALTIME;
+        return task.wakeUp || forceWakeUp ? AlarmManager.ELAPSED_REALTIME_WAKEUP : AlarmManager.ELAPSED_REALTIME;
     }
 
     private void scheduleTask(AlarmManager alarmManager, Task task) {

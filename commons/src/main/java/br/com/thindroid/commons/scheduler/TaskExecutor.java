@@ -53,7 +53,7 @@ public class TaskExecutor extends IntentService {
 
     private void checkAlarmMaxLazyWait(Task task) {
         try {
-            long maxLazyWait = task.alarmTask.maxLazyWait();
+            long maxLazyWait = task.maxLazyWait;
             if (maxLazyWait != AlarmTask.INFINITE) {
                 long nextAlarmTime = getNextAlarmTime();
                 if(nextAlarmTime > System.currentTimeMillis() + maxLazyWait){
