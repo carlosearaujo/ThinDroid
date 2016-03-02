@@ -26,7 +26,7 @@ public class Scheduler extends WakefulBroadcastReceiver {
     private Context mContext;
 
     static final String TAG = Scheduler.class.getName();
-    private static final String ACTION_EXECUTE = "com.utils.commons.scheduler.action.EXECUTE_TASK";
+    private static final String ACTION_EXECUTE = "br.com.thindroid.scheduler.action.EXECUTE_TASK";
 
     private Task[] tasks = new Task[MAX_TASKS];
     private int tasksCount = 0;
