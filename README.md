@@ -45,6 +45,8 @@ Logcoletor: Request Logcat logs remotely by Loglevel and date range.
 
 DataMerge: Merge your WebService data with Local data.
 
+**And More...[In documentation process]**
+
 # Getting start:
 
 ####Adding main library:
