@@ -35,7 +35,7 @@ class Book extends GenericDao<Book>{
     List<Book> books = getAll(); //Or static getAll(Book.class)
     //Get count
     long count = book.getCount(); //Or static getCount(Book.class)
-    //Geting dao
+    //Getting dao
     Dao<Book, Object> dao = getDao(); //Or static getDao(Book.class)
   }
 }
@@ -45,7 +45,7 @@ Logcoletor: Request Logcat logs remotely by Loglevel and date range.
 
 DataMerge: Merge your WebService data with Local data.
 
-# Geting start:
+# Getting start:
 
 ####Adding main library:
 ######Add on toplevel build.gradle:
