@@ -49,12 +49,7 @@ public class Scheduler extends WakefulBroadcastReceiver {
             cancelAlarm(task.taskAction);
         }
         else{
-            Log.d(TAG, "Calling task " + task.getMethodName() + " on class " + task.getTargetClass());
-            Intent serviceIntent = new Intent(mContext, TaskExecutor.class);
-            serviceIntent.setAction(TaskExecutor.ACTION_EXECUTE_TASK);
-            serviceIntent.putExtra("task", task);
-            Log.d(TAG, "Adding Task " + task.getMethodName() + " in TaskExecutor Queue");
-            startWakefulService(mContext, serviceIntent);
+            TaskExecutor.executeTask(task);
         }
     }
 

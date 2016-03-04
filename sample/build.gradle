@@ -26,5 +26,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.2.0'
     compile 'com.android.support:design:23.2.0'
     apt project(':annotations-compiler')
-    compile('br.com.thindroid:commons:1.0.0')
+    compile project(':commons')
 }
