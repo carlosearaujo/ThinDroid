@@ -86,22 +86,17 @@ public class LogColetorReceiver{
     @AlarmTask(interval = AlarmTask.MINUTE)
     public static void register() {
         if(isActivated()) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        StringBuilder log = getLog();
-                        if(isFileActivated()) {
-                            saveOnFile(getDate(), getApplicationLogPath(), log.toString());
-                        }
-                        Runtime.getRuntime().exec("logcat -c");
-                    } catch (HandledException ex) {
-
-                    } catch (Exception e) {
-                        Log.e(TAG, "Error when register log", e);
-                    }
+            try {
+                StringBuilder log = getLog();
+                if(isFileActivated()) {
+                    saveOnFile(getDate(), getApplicationLogPath(), log.toString());
                 }
-            }).start();
+                Runtime.getRuntime().exec("logcat -c");
+            } catch (HandledException ex) {
+
+            } catch (Exception e) {
+                Log.e(TAG, "Error when register log", e);
+            }
         }
     }
 

@@ -4,6 +4,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v4.content.WakefulBroadcastReceiver;
 import android.util.Log;
@@ -13,7 +14,12 @@ import br.com.thindroid.AnnotationResolver;
 import br.com.thindroid.commons.Application;
 import br.com.thindroid.commons.log.LogColetorReceiver;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 
 import static br.com.thindroid.commons.Application.getContext;
 
@@ -22,72 +28,54 @@ import static br.com.thindroid.commons.Application.getContext;
  */
 public class Scheduler extends WakefulBroadcastReceiver {
 
-    public static final int MAX_TASKS = 15;
+    private static final int MAX_TASKS = 20;
     private Context mContext;
 
     static final String TAG = Scheduler.class.getName();
     private static final String ACTION_EXECUTE = "br.com.thindroid.scheduler.action.EXECUTE_TASK";
 
-    private Task[] tasks = new Task[MAX_TASKS];
+    List<Task> tasks = new ArrayList<>();
     private int tasksCount = 0;
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        String action = intent.getAction();
         mContext = context;
-        if(isAlarmCall(action)) {
-            dispatchTask((Task) intent.getSerializableExtra("task"));
+        if(isAlarmCall(intent.getAction())){
+            resolveAlarmCall(context, intent);
         }
         else {
-            resolveBootStrapActions(action);
+            resolveBootStrapActions();
         }
     }
 
-    private void dispatchTask(Task task) {
-        if(task.method == null || task.clazz == null){
-            Log.d(TAG, String.format("Cancel task %s. method or class null.", task.getIdentifier()));
-            cancelAlarm(task.taskAction);
-        }
-        else{
-            TaskExecutor.executeTask(task);
-        }
+    private void resolveAlarmCall(Context context, Intent intent) {
+        Intent serviceIntent = new Intent(context, TaskExecutor.class);
+        serviceIntent.putExtra("bundle", intent.getBundleExtra("bundle"));
+        startWakefulService(context, serviceIntent);
     }
 
-    private void cancelAlarm(String action) {
-        AlarmManager alarmManager = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
-        alarmManager.cancel(PendingIntent.getBroadcast(mContext, 0, new Intent(action), PendingIntent.FLAG_UPDATE_CURRENT));
-    }
-
-    private void resolveBootStrapActions(String action) {
-        AnnotationResolver scheduleResolver = getScheduleResolver();
-        if(scheduleResolver != null) {
-            Class[] managedClasses = scheduleResolver.getManagedClasses();
-            obtainTasks(new Class[]{LogColetorReceiver.class});
-            obtainTasks(managedClasses);
-            logFoundedTasks();
-            if (action.equals(Intent.ACTION_BOOT_COMPLETED) || alarmNotRunning(tasks)) {
-                scheduleTasks();
-            }
-        }
+    private void resolveBootStrapActions() {
+        obtainTasks();
+        logFoundedTasks();
+        scheduleTasks();
     }
 
     private void logFoundedTasks() {
         StringBuilder tasksStr = new StringBuilder("Founded tasks: ");
         for(Task task : tasks){
-            if(task != null) {
-                tasksStr.append(task.getIdentifier() + " ; ");
-            }
+            tasksStr.append(task.getIdentifier() + " ; ");
         }
         Log.d(TAG, tasksStr.toString());
     }
 
-    private boolean alarmNotRunning(Task[] tasks) {
-        for(Task task : tasks){
-            if(task != null && !alarmUp(task)){
-                return true;
+    private void removeAlarmsRunning() {
+        Iterator<Task> iterator = tasks.iterator();
+        while (iterator.hasNext()){
+            Task task = iterator.next();
+            if(alarmUp(task)){
+                iterator.remove();
             }
         }
-        return false;
     }
 
     private boolean alarmUp(Task task) {
@@ -98,20 +86,16 @@ public class Scheduler extends WakefulBroadcastReceiver {
     }
 
     private void scheduleTasks() {
-        cancelAllAlarms();
-        if(tasks.length > 0){
+        if(!tasks.isEmpty()){
             AlarmManager alarmManager = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
             for(Task task : tasks) {
-                if(task != null) {
-                    scheduleTask(alarmManager, task);
-                }
+                scheduleTask(alarmManager, task);
             }
         }
     }
 
     private static void scheduleTask(AlarmManager alarmManager, Task task, boolean forceWakeUp) {
-        Intent intent = buildAlarmIntent(task);
-        PendingIntent alarmIntent = PendingIntent.getBroadcast(getContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent alarmIntent = buildAlarmIntent(task);
         alarmManager.setRepeating(getAlarmType(task, forceWakeUp), SystemClock.elapsedRealtime(), task.alarmInterval, alarmIntent);
     }
 
@@ -120,35 +104,29 @@ public class Scheduler extends WakefulBroadcastReceiver {
     }
 
     private void scheduleTask(AlarmManager alarmManager, Task task) {
-        scheduleTask(alarmManager, task, false);
+        scheduleTask(alarmManager, task, task.wakeUp);
     }
 
-    static void scheduleTaskWakeUp(Task task){
-        scheduleTask((AlarmManager) getContext().getSystemService(Context.ALARM_SERVICE), task, true);
-    }
-
-    private static Intent buildAlarmIntent(Task task) {
+    private static PendingIntent buildAlarmIntent(Task task) {
         Intent intent = new Intent(task.taskAction);
-        intent.putExtra("task", task);
-        return intent;
+        Bundle mBundle = new Bundle();
+        mBundle.setClassLoader(Task.class.getClassLoader());
+        mBundle.putSerializable("task", task);
+        intent.putExtra("bundle", mBundle);
+        return PendingIntent.getBroadcast(getContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
-    private boolean isAlarmCall(String action) {
-        return !(Intent.ACTION_BOOT_COMPLETED.equals(action) || Application.ACTION_LIBRARY_START.equals(action));
-    }
-
-    private void obtainTasks(Class[] managedClasses) {
+    private void obtainTasks() {
+        AnnotationResolver scheduleResolver = AnnotationResolver.getResolver(AlarmTask.class);
+        Class[] managedClasses = scheduleResolver.getManagedClasses();
+        List<Class> managedClassesList = new ArrayList<>(Arrays.asList(managedClasses));
+        managedClassesList.add(LogColetorReceiver.class);
         for (Class managedClass : managedClasses) {
-            for(Method method : managedClass.getDeclaredMethods()){
+            for (Method method : managedClass.getDeclaredMethods()) {
                 checkMethodTask(method);
             }
         }
-    }
-
-    private void cancelAllAlarms() {
-        for(int i = 1; i <= MAX_TASKS ; i++){
-            cancelAlarm(ACTION_EXECUTE.concat("_".concat(String.valueOf(i))));
-        }
+        removeAlarmsRunning();
     }
 
     private boolean checkMethodTask(Method method) {
@@ -158,7 +136,7 @@ public class Scheduler extends WakefulBroadcastReceiver {
                 Log.w(Scheduler.class.getSimpleName(), "Ignoring task " + method + ". Method cannot have params.");
             }
             else{
-                tasks[tasksCount] = new Task(method, alarmTask, getNextActionAvailable());
+                tasks.add(new Task(method, alarmTask, getNextActionAvailable()));
                 return true;
             }
         }
@@ -173,15 +151,7 @@ public class Scheduler extends WakefulBroadcastReceiver {
         return ACTION_EXECUTE.concat("_").concat(String.valueOf(tasksCount));
     }
 
-    private AnnotationResolver getScheduleResolver() {
-        try {
-            Class<AnnotationResolver> schedulerResolver = (Class<AnnotationResolver>) Class.forName("br.com.thindroid.AlarmTaskResolver");
-            AnnotationResolver scheduleResolverInstance =  schedulerResolver.newInstance();
-            return scheduleResolverInstance;
-        }
-        catch (Exception ex){
-            Log.w(Scheduler.class.getSimpleName() , "Error when load AlarmTaskResolver", ex);
-            return null;
-        }
+    private boolean isAlarmCall(String action) {
+        return !(Intent.ACTION_BOOT_COMPLETED.equals(action) || Application.ACTION_LIBRARY_START.equals(action));
     }
 }

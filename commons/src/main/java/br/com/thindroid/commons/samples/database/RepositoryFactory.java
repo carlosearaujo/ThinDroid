@@ -10,9 +10,9 @@ public class RepositoryFactory extends br.com.thindroid.commons.database.Reposit
 
     @Override
     public DefaultRepository getRepositoryImpl(String repositoryName) {
-        if(repositoryName == Repository.REPOSITORY_NAME) {
+        /*if(repositoryName == Repository.REPOSITORY_NAME) {
             return new Repository();
-        }
+        }*/
         return null;
     }
 }

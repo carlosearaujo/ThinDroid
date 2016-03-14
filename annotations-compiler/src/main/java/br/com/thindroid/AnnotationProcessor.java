@@ -19,7 +19,7 @@ import javax.tools.Diagnostic;
 
 import static javax.lang.model.element.Modifier.PUBLIC;
 
-@SupportedAnnotationTypes(value = {"br.com.thindroid.AlarmTask"})
+@SupportedAnnotationTypes(value = {"br.com.thindroid.AlarmTask", "br.com.thindroid.Repository"})
 public class AnnotationProcessor extends AbstractProcessor {
 
     private Messager messager;
@@ -30,8 +30,7 @@ public class AnnotationProcessor extends AbstractProcessor {
         messager = processingEnv.getMessager();
     }
 
-    @Override
-    public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
+    @Override public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         for(TypeElement annotation : annotations){
             TypeSpec clazzSpec = buildClass(annotation, roundEnv.getElementsAnnotatedWith(annotation));
             JavaFile javaFile = JavaFile.builder("br.com.thindroid", clazzSpec).build();
@@ -47,7 +46,7 @@ public class AnnotationProcessor extends AbstractProcessor {
     private TypeSpec buildClass(TypeElement annotation, Set<? extends Element> annotatedClasses) {
         TypeSpec.Builder builder = TypeSpec.classBuilder(annotation.getSimpleName().toString() + "Resolver");
         builder.addModifiers(PUBLIC);
-        builder.addSuperinterface(AnnotationResolver.class);
+        builder.superclass(AnnotationResolver.class);
         MethodSpec methodSpec = MethodSpec.methodBuilder("getManagedClasses").
                 addModifiers(PUBLIC).returns(Class[].class).
                 addStatement(String.format("return new Class[]{%s}", annotatedClassesToStr(annotatedClasses))).
@@ -63,7 +62,7 @@ public class AnnotationProcessor extends AbstractProcessor {
             Element clazzElement = findEnclosingTypeElement(element);
             if(!classAdded.contains(clazzElement.toString())) {
                 stringBuilder.append(clazzElement.toString() + ".class,");
-                classAdded.add(element.toString());
+                classAdded.add(clazzElement.toString());
             }
         }
         return stringBuilder.toString().substring(0, stringBuilder.length() - 1);

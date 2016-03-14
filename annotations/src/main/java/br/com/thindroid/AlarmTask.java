@@ -16,6 +16,4 @@ public @interface AlarmTask{
 
     long interval() default INFINITE;
     boolean wakeUp() default false;
-
-    long maxLazyWait() default INFINITE;
 }

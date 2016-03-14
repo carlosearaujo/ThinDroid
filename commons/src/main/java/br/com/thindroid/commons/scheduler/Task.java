@@ -23,14 +23,12 @@ class Task implements Serializable{
     long alarmInterval;
     boolean wakeUp;
     String taskAction;
-    long maxLazyWait;
 
     public Task(Method method, AlarmTask alarmTask, String taskAction)  {
         this.method = method;
         alarmInterval = alarmTask.interval();
         this.wakeUp = alarmTask.wakeUp();
         this.taskAction = taskAction;
-        this.maxLazyWait = alarmTask.maxLazyWait();
         this.methodName = method.getName();
         this.className = getTargetClass();
     }
