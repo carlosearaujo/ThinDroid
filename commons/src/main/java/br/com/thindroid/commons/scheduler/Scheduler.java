@@ -9,17 +9,16 @@ import android.os.SystemClock;
 import android.support.v4.content.WakefulBroadcastReceiver;
 import android.util.Log;
 
-import br.com.thindroid.AlarmTask;
-import br.com.thindroid.AnnotationResolver;
-import br.com.thindroid.commons.Application;
-import br.com.thindroid.commons.log.LogColetorReceiver;
-
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+
+import br.com.thindroid.annotations.AlarmTask;
+import br.com.thindroid.annotations.AnnotationResolver;
+import br.com.thindroid.commons.Application;
+import br.com.thindroid.commons.log.LogColetorReceiver;
 
 import static br.com.thindroid.commons.Application.getContext;
 

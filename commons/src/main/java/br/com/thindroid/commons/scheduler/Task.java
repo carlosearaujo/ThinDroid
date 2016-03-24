@@ -7,7 +7,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Method;
-import br.com.thindroid.AlarmTask;
+
+import br.com.thindroid.annotations.AlarmTask;
 
 /**
  * Created by Carlos on 23/02/2016.

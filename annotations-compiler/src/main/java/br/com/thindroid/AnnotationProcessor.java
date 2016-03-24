@@ -20,6 +20,8 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
 
+import br.com.thindroid.annotations.AnnotationResolver;
+
 import static javax.lang.model.element.Modifier.PUBLIC;
 
 @SupportedAnnotationTypes(value = {"br.com.thindroid.AlarmTask", "br.com.thindroid.Repository"})

@@ -1,4 +1,4 @@
-package br.com.thindroid;
+package br.com.thindroid.annotations;
 
 import java.lang.annotation.Annotation;
 

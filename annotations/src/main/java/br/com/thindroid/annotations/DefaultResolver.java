@@ -1,4 +1,6 @@
-package br.com.thindroid;
+package br.com.thindroid.annotations;
+
+import br.com.thindroid.annotations.AnnotationResolver;
 
 /**
  * Created by Carlos on 11/03/2016.

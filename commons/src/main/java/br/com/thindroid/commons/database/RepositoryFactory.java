@@ -1,23 +1,16 @@
 package br.com.thindroid.commons.database;
 
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
-
-import br.com.thindroid.AnnotationResolver;
-import br.com.thindroid.Repository;
-import br.com.thindroid.commons.log.LogsRepository;
-
-import java.lang.annotation.Annotation;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import static br.com.thindroid.commons.Application.getContext;
+import br.com.thindroid.annotations.AnnotationResolver;
+import br.com.thindroid.commons.log.LogsRepository;
+import br.com.thindroid.annotations.Repository;
 
 /**
  * Created by carlos.araujo on 11/04/2015.
  */
-public abstract class RepositoryFactory {
+public class RepositoryFactory {
 
     private static HashMap<String, DefaultRepository> repositories;
 

@@ -1,4 +1,4 @@
-package br.com.thindroid.commons.samples.database;
+package br.com.thindroid.commons.database;
 
 import br.com.thindroid.commons.Application;
 import br.com.thindroid.commons.database.DefaultRepository;
