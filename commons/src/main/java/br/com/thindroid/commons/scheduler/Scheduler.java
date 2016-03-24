@@ -118,13 +118,15 @@ public class Scheduler extends WakefulBroadcastReceiver {
 
     private void obtainTasks() {
         AnnotationResolver scheduleResolver = AnnotationResolver.getResolver(AlarmTask.class);
-        Class[] managedClasses = scheduleResolver.getManagedClasses();
-        List<Class> managedClassesList = new ArrayList<>(Arrays.asList(managedClasses));
-        managedClassesList.add(LogColetorReceiver.class);
-        for (Class managedClass : managedClasses) {
-            for (Method method : managedClass.getDeclaredMethods()) {
-                checkMethodTask(method);
-            }
+        Method[] managedMethods = scheduleResolver.getManagedElements();
+        List<Method> managedClassesList = new ArrayList<>(Arrays.asList(managedMethods));
+        try {
+            managedClassesList.add(LogColetorReceiver.class.getMethod("register"));
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+        for (Method method : managedMethods) {
+            checkMethodTask(method);
         }
         removeAlarmsRunning();
     }

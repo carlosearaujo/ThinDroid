@@ -37,7 +37,7 @@ public abstract class RepositoryFactory {
     }
 
     private static DefaultRepository resolveRepository(String repositoryName) {
-        Class[] repositoriesClasses = AnnotationResolver.getResolver(Repository.class).getManagedClasses();
+        Class[] repositoriesClasses = AnnotationResolver.getResolver(Repository.class).getManagedElements();
         for(Class clazz : repositoriesClasses){
             Repository annotation = (Repository) clazz.getAnnotation(Repository.class);
             if(annotation.value().equals(repositoryName)){
