@@ -5,6 +5,9 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 
 import java.io.IOException;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Target;
+import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -44,18 +47,40 @@ public class AnnotationProcessor extends AbstractProcessor {
     }
 
     private TypeSpec buildClass(TypeElement annotation, Set<? extends Element> annotatedClasses) {
+        ElementType target = getAnnotationTarget(annotation);
         TypeSpec.Builder builder = TypeSpec.classBuilder(annotation.getSimpleName().toString() + "Resolver");
         builder.addModifiers(PUBLIC);
         builder.superclass(AnnotationResolver.class);
-        MethodSpec methodSpec = MethodSpec.methodBuilder("getManagedClasses").
-                addModifiers(PUBLIC).returns(Class[].class).
-                addStatement(String.format("return new Class[]{%s}", annotatedClassesToStr(annotatedClasses))).
+        MethodSpec methodSpec = MethodSpec.methodBuilder("getManagedElements").
+                addModifiers(PUBLIC).returns(target.equals(ElementType.TYPE) ? Class[].class : Method[].class).
+                addCode("try{").
+                addStatement(String.format("return new %s{%s}", target.equals(ElementType.TYPE) ? "Class[]" : "Method[]" , buildReturn(target, annotatedClasses))).
+                addStatement("}catch(Exception ex){throw new RuntimeException(ex)").
+                addCode("}").
                 build();
         builder.addMethod(methodSpec);
         return builder.build();
     }
 
-    private String annotatedClassesToStr(Set<? extends Element> annotatedElements) {
+    private String buildReturn(ElementType target, Set<? extends Element> annotatedClasses) {
+        if(target.equals(ElementType.TYPE)){
+            return buildTypeReturn(annotatedClasses);
+        }
+        else{
+            return buildMethodReturn(annotatedClasses);
+        }
+    }
+
+    private String buildMethodReturn(Set<? extends Element> annotatedClasses) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for(Element element : annotatedClasses){
+            Element clazzElement = findEnclosingTypeElement(element);
+            stringBuilder.append(String.format(clazzElement.toString() + ".class.getMethod(\"%s\"),", element.getSimpleName().toString()));
+        }
+        return stringBuilder.toString().substring(0, stringBuilder.length() - 1);
+    }
+
+    private String buildTypeReturn(Set<? extends Element> annotatedElements) {
         StringBuilder stringBuilder = new StringBuilder();
         Set<String> classAdded = new HashSet<>();
         for(Element element : annotatedElements){
@@ -74,5 +99,9 @@ public class AnnotationProcessor extends AbstractProcessor {
         }
         return TypeElement.class.cast(e);
 
+    }
+
+    public ElementType getAnnotationTarget(TypeElement annotation) {
+        return annotation.getAnnotation(Target.class).value()[0];
     }
 }

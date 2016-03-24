@@ -5,7 +5,7 @@ package br.com.thindroid;
  */
 public class DefaultResolver extends AnnotationResolver {
     @Override
-    public Class[] getManagedClasses() {
-        return new Class[0];
+    public Object[] getManagedElements() {
+        return new Object[0];
     }
 }

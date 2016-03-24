@@ -21,5 +21,5 @@ public abstract class AnnotationResolver {
         }
     }
 
-    public abstract Class[] getManagedClasses();
+    public abstract <T> T[] getManagedElements();
 }
