@@ -124,7 +124,7 @@ public class Scheduler extends WakefulBroadcastReceiver {
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
-        for (Method method : managedMethods) {
+        for (Method method : managedClassesList) {
             checkMethodTask(method);
         }
         removeAlarmsRunning();

@@ -21,7 +21,9 @@ public abstract class DefaultRepository extends OrmLiteSqliteOpenHelper {
         super(context, databaseName, factory, databaseVersion);
     }
 
-    public abstract Class[] getManagedClassList();
+    private final Class[] getManagedClassList(){
+        return getClass().getAnnotation(br.com.thindroid.annotations.Repository.class).managedClassList();
+    }
 
     @Override
     public void onCreate(SQLiteDatabase database, ConnectionSource connectionSource) {
@@ -82,5 +84,21 @@ public abstract class DefaultRepository extends OrmLiteSqliteOpenHelper {
         });
     }
 
-    protected abstract String getRepositoryName();
+    public boolean manageEntity(Class entity) {
+        for(Class clazz : getManagedClassList()){
+            if(clazz.equals(entity)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean manageEntity(Class<? extends DefaultRepository> repositoryClass, Class entity) {
+        for(Class clazz : repositoryClass.getAnnotation(br.com.thindroid.annotations.Repository.class).managedClassList()){
+            if(clazz.equals(entity)){
+                return true;
+            }
+        }
+        return false;
+    }
 }

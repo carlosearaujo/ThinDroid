@@ -7,7 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.SystemClock;
 
-import br.com.thindroid.AlarmTask;
+import br.com.thindroid.annotations.AlarmTask;
 
 /**
  * Created by Carlos on 22/12/2015.

@@ -8,7 +8,7 @@ import android.util.Log;
 
 import com.j256.ormlite.stmt.QueryBuilder;
 
-import br.com.thindroid.AlarmTask;
+import br.com.thindroid.annotations.AlarmTask;
 import br.com.thindroid.commons.Application;
 import br.com.thindroid.commons.database.GenericDao;
 import br.com.thindroid.commons.utils.HandledException;

@@ -51,11 +51,11 @@ public abstract class GenericDao<T extends GenericDao> implements Serializable {
     }
 
     public void deleteAll(){
-        deleteAll(typeParamClass, getRepositoryName());
+        deleteAll(typeParamClass);
     }
 
-    public static void deleteAll(Class clazz, String repositoryName) {
-        getRepository(repositoryName).deleteAll(clazz);
+    public static void deleteAll(Class clazz) {
+        getRepository(clazz).deleteAll(clazz);
     }
 
     public static <T extends GenericDao> void createOrUpdate(final T... data){
@@ -78,11 +78,11 @@ public abstract class GenericDao<T extends GenericDao> implements Serializable {
     }
 
     public List<T> getAll(){
-        return getAll(typeParamClass, getRepositoryName());
+        return getAll(typeParamClass);
     }
 
-    public static <D> List<D> getAll(Class<D> clazz, String repositoryName){
-        Dao<D, Object> dao = getRepository(repositoryName).getDao(clazz);
+    public static <D> List<D> getAll(Class<D> clazz){
+        Dao<D, Object> dao = getRepository(clazz).getDao(clazz);
         try {
             return dao.queryForAll();
         } catch (SQLException e) {
@@ -91,11 +91,11 @@ public abstract class GenericDao<T extends GenericDao> implements Serializable {
     }
 
     public long getCount() {
-        return getCount(typeParamClass, getRepositoryName());
+        return getCount(typeParamClass);
     }
 
-    protected static long getCount(Class clazz, String repositoryName) {
-        Dao dao = getRepository(repositoryName).getDao(clazz);
+    protected static long getCount(Class clazz) {
+        Dao dao = getRepository(clazz).getDao(clazz);
         try {
             return dao.countOf();
         } catch (SQLException e) {
@@ -104,15 +104,15 @@ public abstract class GenericDao<T extends GenericDao> implements Serializable {
     }
 
     protected Dao getDao(){
-        return getDao(typeParamClass, getRepositoryName());
+        return getDao(typeParamClass);
     }
 
-    protected static <E> Dao<E, ?> getDao(Class<E> clazz, String repositoryName){
-        return getRepository(repositoryName).getDao(clazz);
+    protected static <E> Dao<E, ?> getDao(Class<E> clazz){
+        return getRepository(clazz).getDao(clazz);
     }
 
-    public static <E> E findById(Class<E> clazz,String repositoryName, long id) {
-        Dao<E, Object> dao = getRepository(repositoryName).getDao(clazz);
+    public static <E> E findById(Class<E> clazz, long id) {
+        Dao<E, Object> dao = getRepository(clazz).getDao(clazz);
         try {
             return dao.queryForId(id);
         } catch (SQLException e) {
@@ -129,7 +129,7 @@ public abstract class GenericDao<T extends GenericDao> implements Serializable {
     }
 
     public void notifyDataChange(ChangeType changeType) {
-        notifyDataChange(changeType, getClass());
+        notifyDataChange(changeType, typeParamClass);
     }
 
     public static void notifyDataChange(Class clazz, ChangeType changeType) {
@@ -144,15 +144,17 @@ public abstract class GenericDao<T extends GenericDao> implements Serializable {
         return clazz.getName();
     }
 
-    protected static DefaultRepository getRepository(String repositoryName){
-        return RepositoryFactory.getRepository(repositoryName);
+    protected static DefaultRepository getRepository(Class entityClass){
+        return RepositoryFactory.resolveRepository(entityClass);
     }
 
-    protected abstract String getRepositoryName();
+    protected DefaultRepository getRepository(){
+        return RepositoryFactory.resolveRepository(typeParamClass);
+    }
 
     public void clearDatabase(){
         try {
-            getRepository(getRepositoryName()).clearDatabase();
+            getRepository().clearDatabase();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

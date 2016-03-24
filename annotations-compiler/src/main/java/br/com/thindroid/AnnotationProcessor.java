@@ -24,7 +24,7 @@ import br.com.thindroid.annotations.AnnotationResolver;
 
 import static javax.lang.model.element.Modifier.PUBLIC;
 
-@SupportedAnnotationTypes(value = {"br.com.thindroid.AlarmTask", "br.com.thindroid.Repository"})
+@SupportedAnnotationTypes(value = {"br.com.thindroid.annotations.AlarmTask", "br.com.thindroid.annotations.Repository"})
 public class AnnotationProcessor extends AbstractProcessor {
 
     private Messager messager;
@@ -38,7 +38,7 @@ public class AnnotationProcessor extends AbstractProcessor {
     @Override public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         for(TypeElement annotation : annotations){
             TypeSpec clazzSpec = buildClass(annotation, roundEnv.getElementsAnnotatedWith(annotation));
-            JavaFile javaFile = JavaFile.builder("br.com.thindroid", clazzSpec).build();
+            JavaFile javaFile = JavaFile.builder("br.com.thindroid.annotations", clazzSpec).build();
             try {
                 javaFile.writeTo(processingEnv.getFiler());
             } catch (IOException e) {

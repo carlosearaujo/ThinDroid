@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import br.com.thindroid.annotations.AnnotationResolver;
-import br.com.thindroid.commons.log.LogsRepository;
 import br.com.thindroid.annotations.Repository;
+import br.com.thindroid.commons.log.LogsRepository;
 
 /**
  * Created by carlos.araujo on 11/04/2015.
@@ -14,13 +14,9 @@ public class RepositoryFactory {
 
     private static HashMap<String, DefaultRepository> repositories;
 
-    static DefaultRepository getRepository(String repositoryName){
-        return findRepositoryOnHash(repositoryName);
-    }
-
-    private static DefaultRepository findRepositoryOnHash(String repositoryName) {
+    static DefaultRepository getRepositoryByName(String repositoryName){
         if(!getRepositories().containsKey(repositoryName)){
-            getRepositories().put(repositoryName, repositoryName == LogsRepository.REPOSITORY_NAME ? new LogsRepository() : resolveRepository(repositoryName));
+            addRepositoryOnHash(resolveRepository(repositoryName));
         }
         DefaultRepository repository =  repositories.get(repositoryName);
         if(repository == null){
@@ -29,11 +25,57 @@ public class RepositoryFactory {
         return repository;
     }
 
+    private static void addRepositoryOnHash(DefaultRepository defaultRepository) {
+        getRepositories().put(defaultRepository.getClass().getAnnotation(Repository.class).value(), defaultRepository);
+    }
+
+    static DefaultRepository resolveRepository(Class entity){
+        DefaultRepository hashResult = findOnHash(entity);
+        if(hashResult != null){
+            return hashResult;
+        }
+        else {
+            DefaultRepository repository = findOnAllRepositories(entity);
+            if(repository == null) {
+                throw new IllegalArgumentException(String.format("Repository for entity %s not found", entity.getName()));
+            }
+            addRepositoryOnHash(repository);
+            return repository;
+        }
+    }
+
+    private static DefaultRepository findOnAllRepositories(Class entity) {
+        if(DefaultRepository.manageEntity(LogsRepository.class, entity)){
+            return new LogsRepository();
+        }
+        Class<? extends DefaultRepository>[] repositoriesClasses = AnnotationResolver.getResolver(Repository.class).getManagedElements();
+        for(Class<? extends DefaultRepository> repositoryClass : repositoriesClasses){
+            try {
+                if(DefaultRepository.manageEntity(repositoryClass, entity)){
+                    return repositoryClass.newInstance();
+                }
+            }
+            catch (Exception ex){
+                throw new RuntimeException(ex);
+            }
+        }
+        return null;
+    }
+
+    private static DefaultRepository findOnHash(Class entity) {
+        for(DefaultRepository repository : getRepositories().values()){
+            if(repository.manageEntity(entity)){
+                return repository;
+            }
+        }
+        return null;
+    }
+
     private static DefaultRepository resolveRepository(String repositoryName) {
         Class[] repositoriesClasses = AnnotationResolver.getResolver(Repository.class).getManagedElements();
         for(Class clazz : repositoriesClasses){
-            Repository annotation = (Repository) clazz.getAnnotation(Repository.class);
-            if(annotation.value().equals(repositoryName)){
+            Repository repositoryAnnotation = (Repository) clazz.getAnnotation(Repository.class);
+            if(repositoryAnnotation.value().equals(repositoryName)){
                 try {
                     return (DefaultRepository) clazz.newInstance();
                 }catch (Exception ex){

@@ -9,11 +9,12 @@ public class ActivityTests extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.content_tests);
+        test();
     }
 
 
     private static void test(){
-
+        new DaoTest().createOrUpdate();
     }
 
 }

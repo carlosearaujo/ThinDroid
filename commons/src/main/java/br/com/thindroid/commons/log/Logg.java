@@ -53,22 +53,17 @@ public class Logg extends GenericDao<Logg> {
         return id;
     }
 
-    @Override
-    protected String getRepositoryName() {
-        return LogsRepository.REPOSITORY_NAME;
-    }
-
     public static Cursor getLogsAsCursor(Calendar start, Calendar end, LogLevel logLevel){
         try {
             QueryBuilder<Logg, ?> queryBuilder = buildQuery(start, end, logLevel);
-            return getRepository(LogsRepository.REPOSITORY_NAME).getReadableDatabase().rawQuery(queryBuilder.prepareStatementString(), null);
+            return getRepository(Logg.class).getReadableDatabase().rawQuery(queryBuilder.prepareStatementString(), null);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
     static QueryBuilder<Logg, ?> buildQuery(Calendar start, Calendar end, LogLevel logLevel) throws SQLException {
-        Dao<Logg, ?> dao = getDao(Logg.class, LogsRepository.REPOSITORY_NAME);
+        Dao<Logg, ?> dao = getDao(Logg.class);
         QueryBuilder queryBuilder = dao.queryBuilder();
         queryBuilder.where().between(COLUMN_TIME, start.getTimeInMillis(), end.getTimeInMillis()).and().eq(COLUMN_LOGLEVEL, logLevel);
         return queryBuilder;
