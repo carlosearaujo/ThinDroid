@@ -6,24 +6,21 @@ import android.content.pm.PackageManager;
 import android.os.Environment;
 import android.util.Log;
 
-import com.j256.ormlite.stmt.QueryBuilder;
-
-import br.com.thindroid.annotations.AlarmTask;
-import br.com.thindroid.commons.Application;
-import br.com.thindroid.commons.database.GenericDao;
-import br.com.thindroid.commons.utils.HandledException;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
+import br.com.thindroid.annotations.AlarmTask;
+import br.com.thindroid.commons.Application;
+import br.com.thindroid.commons.database.GenericDao;
+import br.com.thindroid.commons.utils.HandledException;
 
 import static br.com.thindroid.commons.Application.getContext;
 
@@ -83,7 +80,7 @@ public class LogColetorReceiver{
         }
     }
 
-    @AlarmTask(interval = AlarmTask.MINUTE)
+    @AlarmTask(interval = 5 * AlarmTask.MINUTE)
     public static void register() {
         if(isActivated()) {
             try {
@@ -130,6 +127,7 @@ public class LogColetorReceiver{
             StringBuilder log = new StringBuilder();
             String line;
             List<Logg> logs = new ArrayList<>();
+            Calendar currentDate = Calendar.getInstance();
             while ((line = bufferedReader.readLine()) != null) {
                 if (!isIgnoredData(line)) {
                     if(databaseLogsEnable && startNewMessage(line)) {
@@ -138,7 +136,7 @@ public class LogColetorReceiver{
                         while ((line = bufferedReader.readLine()) != null && !messageEnd(line)) {
                             stringBuilder.append(line + "\n");
                         }
-                        Logg newLog = Logg.buildLog(header, stringBuilder);
+                        Logg newLog = Logg.buildLog(currentDate, header, stringBuilder);
                         if(newLog != null){
                             logs.add(newLog);
                         }
@@ -164,7 +162,12 @@ public class LogColetorReceiver{
     }
 
     private static boolean isIgnoredData(String line) {
-        return line.equals("") || line.contains("beginning of") || line.contains("E/SELinux") || line.contains("Debugger attempted") || line.contains("waiting for the debugger");
+        return line.equals("") ||
+               line.contains("beginning of")
+               || line.contains("E/SELinux")
+               || line.contains("Debugger attempted")
+               || line.contains("waiting for the debugger")
+               || line.contains("ResourcesManager");
     }
 
     private static boolean startNewMessage(String line) {
@@ -173,9 +176,8 @@ public class LogColetorReceiver{
 
     private static BufferedReader requestLogToLogCat() {
         try {
-            String tag = getTagFilter();
             String loglvl = getLogLevel();
-            Process process = Runtime.getRuntime().exec(String.format("logcat -d -v long %s %s", loglvl, tag == null ? "" : (" -s " + tag)));
+            Process process = Runtime.getRuntime().exec(String.format("logcat -d -v long %s | grep %s", "*" + loglvl,android.os.Process.myPid()));
             return new BufferedReader(new InputStreamReader(process.getInputStream()));
         }
         catch (Exception ex){
@@ -204,17 +206,5 @@ public class LogColetorReceiver{
         editor.putBoolean(PREFERENCE_DATABASE_LOGS_ACTIVATED, onDatabase);
         editor.putBoolean(PREFERENCE_FILE_LOGS_ACTIVATED, onFile);
         editor.commit();
-    }
-
-    public static List<Logg> getLogs(Calendar start, Calendar end, LogLevel logLevel){
-        if(!getPreferences().getBoolean(PREFERENCE_DATABASE_LOGS_ACTIVATED, false)){
-            throw new RuntimeException("Database logs must be activated to getlogs. See activate method");
-        }
-        try {
-            QueryBuilder<Logg, ?> queryBuilder = Logg.buildQuery(start, end, logLevel);
-            return queryBuilder.query();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
     }
 }
