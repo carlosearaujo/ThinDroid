@@ -10,24 +10,9 @@ import br.com.thindroid.commons.log.LogsRepository;
 /**
  * Created by carlos.araujo on 11/04/2015.
  */
-public class RepositoryFactory {
+class RepositoryFactory {
 
     private static HashMap<String, DefaultRepository> repositories;
-
-    static DefaultRepository getRepositoryByName(String repositoryName){
-        if(!getRepositories().containsKey(repositoryName)){
-            addRepositoryOnHash(resolveRepository(repositoryName));
-        }
-        DefaultRepository repository =  repositories.get(repositoryName);
-        if(repository == null){
-            throw new IllegalArgumentException(String.format("Repository %s not found", repositoryName));
-        }
-        return repository;
-    }
-
-    private static void addRepositoryOnHash(DefaultRepository defaultRepository) {
-        getRepositories().put(defaultRepository.getClass().getAnnotation(Repository.class).value(), defaultRepository);
-    }
 
     static DefaultRepository resolveRepository(Class entity){
         DefaultRepository hashResult = findOnHash(entity);
@@ -42,6 +27,21 @@ public class RepositoryFactory {
             addRepositoryOnHash(repository);
             return repository;
         }
+    }
+
+    static DefaultRepository getRepositoryByName(String repositoryName){
+        if(!getRepositories().containsKey(repositoryName)){
+            addRepositoryOnHash(resolveRepository(repositoryName));
+        }
+        DefaultRepository repository =  repositories.get(repositoryName);
+        if(repository == null){
+            throw new IllegalArgumentException(String.format("Repository %s not found", repositoryName));
+        }
+        return repository;
+    }
+
+    private static void addRepositoryOnHash(DefaultRepository defaultRepository) {
+        getRepositories().put(defaultRepository.getClass().getAnnotation(Repository.class).value(), defaultRepository);
     }
 
     private static DefaultRepository findOnAllRepositories(Class entity) {
