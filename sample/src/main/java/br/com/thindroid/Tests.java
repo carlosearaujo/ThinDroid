@@ -9,6 +9,7 @@ public class Tests {
         System.out.print("Executing this code every 60 seconds");
         try {
             Thread.sleep(30 * 1000);
+
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

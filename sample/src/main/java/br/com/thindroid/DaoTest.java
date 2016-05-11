@@ -21,9 +21,4 @@ public class DaoTest extends GenericDao<DaoTest> {
     public DaoTest() {
         super(DaoTest.class);
     }
-
-    @Override
-    public <T extends Serializable> T getId() {
-        return null;
-    }
 }
