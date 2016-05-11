@@ -1,4 +1,4 @@
-package br.com.thindroid.commons.log;
+package br.com.thindroid.commons.log.nativelogs;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -33,7 +33,6 @@ public class LogColetorReceiver{
     public static final long HOUR = 60*MINUTE;
     public static final long DAY = 24*HOUR;
     private static final String PREFERENCE_LOG_LEVEL = "PREFERENCE_LOG_LEVEL";
-    private static final String PREFERENCE_TAG_FILTER = "PREFERENCE_TAG_FILTER";
     private static final String TAG = LogColetorReceiver.class.getSimpleName();
     private static final String PREFERENCE_DATABASE_LOGS_ACTIVATED = "PREFERENCE_DATABASE_LOGS_ACTIVATED";
     private static final String PREFERENCE_FILE_LOGS_ACTIVATED = "PREFERENCE_FILE_LOGS_ACTIVATED";
@@ -47,11 +46,10 @@ public class LogColetorReceiver{
         return mDateFormat.format(new Date());
     }
 
-    public static void changeLogLevel(LogLevel newLogLevel, String tagFilter) {
+    public static void changeLogLevel(LogLevel newLogLevel) {
         SharedPreferences preferences = getPreferences();
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(PREFERENCE_LOG_LEVEL, newLogLevel != null ? newLogLevel.toString() : null);
-        editor.putString(PREFERENCE_TAG_FILTER, tagFilter);
         editor.commit();
     }
 
@@ -126,7 +124,7 @@ public class LogColetorReceiver{
         try {
             StringBuilder log = new StringBuilder();
             String line;
-            List<Logg> logs = new ArrayList<>();
+            List<NativeLog> logs = new ArrayList<>();
             Calendar currentDate = Calendar.getInstance();
             while ((line = bufferedReader.readLine()) != null) {
                 if (!isIgnoredData(line)) {
@@ -136,7 +134,7 @@ public class LogColetorReceiver{
                         while ((line = bufferedReader.readLine()) != null && !messageEnd(line)) {
                             stringBuilder.append(line + "\n");
                         }
-                        Logg newLog = Logg.buildLog(currentDate, header, stringBuilder);
+                        NativeLog newLog = NativeLog.buildLog(currentDate, header, stringBuilder);
                         if(newLog != null){
                             logs.add(newLog);
                         }
@@ -147,7 +145,7 @@ public class LogColetorReceiver{
                 }
             }
             if(databaseLogsEnable){
-                GenericDao.createOrUpdate(logs.toArray(new Logg[0]));
+                GenericDao.createOrUpdate(logs.toArray(new NativeLog[0]));
             }
             return log;
         }
@@ -184,10 +182,6 @@ public class LogColetorReceiver{
             Log.w(TAG, "Error when request log to LogCat", ex);
             throw new HandledException("Error when request log to LogCat");
         }
-    }
-
-    private static String getTagFilter() {
-        return getPreferences().getString(PREFERENCE_TAG_FILTER, null);
     }
 
     private static String getLogLevel() {

@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">Commons</string>
+
+
+    <!-- Connection Problem -->
+    <string name="default_client_connection_error">Problemas de conexão com o servidor.\nVerifique se a conexão está ativa e tente novamente.</string>
+    <string name="default_unavailable_server_error">Servidor indisponível. Requisição cancelada.</string>
+    <string name="unknown_error">Erro desconhecido ao consultar servidor remoto.</string>
+    <string name="timeout_error">Esgotado o tempo limite de conexão com o servidor.</string>
+    <!-- |||||||||||||||||| -->
+    <string name="action_settings">Configurar</string>
+    <string name="default_generic_error">Erro desconhecido. Tente novamente. Caso o erro persista, entre em contato com o administrador.</string>
+    <string name="default_unauthorized_error">Sem autorização.</string>
 </resources>

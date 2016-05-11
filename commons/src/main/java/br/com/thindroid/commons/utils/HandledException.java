@@ -2,8 +2,6 @@ package br.com.thindroid.commons.utils;
 
 import android.util.Log;
 
-import br.com.thindroid.commons.log.LogLevel;
-
 /**
  * Created by Carlos on 26/11/2015.
  */

@@ -18,7 +18,7 @@ import java.util.List;
 import br.com.thindroid.annotations.AlarmTask;
 import br.com.thindroid.annotations.AnnotationResolver;
 import br.com.thindroid.commons.Application;
-import br.com.thindroid.commons.log.LogColetorReceiver;
+import br.com.thindroid.commons.log.nativelogs.LogColetorReceiver;
 
 import static br.com.thindroid.commons.Application.getContext;
 

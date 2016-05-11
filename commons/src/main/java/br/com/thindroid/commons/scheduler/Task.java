@@ -13,7 +13,7 @@ import br.com.thindroid.annotations.AlarmTask;
 /**
  * Created by Carlos on 23/02/2016.
  */
-class Task implements Serializable{
+public class Task implements Serializable{
 
     private static final String TAG = Task.class.getSimpleName();
 
@@ -34,7 +34,7 @@ class Task implements Serializable{
         this.className = getTargetClass();
     }
 
-    private Task() {
+    public Task() {
 
     }
 

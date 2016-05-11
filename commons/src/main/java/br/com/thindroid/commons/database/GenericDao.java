@@ -26,8 +26,6 @@ public abstract class GenericDao<T extends GenericDao> implements Serializable {
         typeParamClass = clazz;
     }
 
-    public abstract <T extends Serializable>  T getId();
-
     public void createOrUpdate(){
         try {
             getDao().createOrUpdate(this);

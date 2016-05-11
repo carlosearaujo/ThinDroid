@@ -54,7 +54,7 @@ public abstract class ThreadPoolService extends Service {
         if(mHandler == null) {
             mHandler = new Handler();
             Log.d(TAG, "Starting Service");
-            if(wakeUp) {
+            if(wakeUp && (wakeLock == null || !wakeLock.isHeld())) {
                 wakeLock = ((PowerManager) getSystemService(POWER_SERVICE)).newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
                 wakeLock.acquire();
             }
@@ -77,7 +77,9 @@ public abstract class ThreadPoolService extends Service {
     }
 
     protected void onFinish() {
-
+        if(wakeLock.isHeld()){
+            wakeLock.release();
+        }
     }
 
     public abstract void executeOnPool(Intent intent);

@@ -1,6 +1,4 @@
-package br.com.thindroid.commons.log;
-
-import android.util.Log;
+package br.com.thindroid.commons.log.nativelogs;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,12 +7,25 @@ import java.util.List;
  * Created by carlos.araujo on 14/11/2014.
  */
 public enum LogLevel {
-    VERBOSE(Log.VERBOSE), DEBUG(Log.DEBUG), INFORMATION(Log.INFO), WARNING(Log.WARN), ERROR(Log.ERROR);
+    VERBOSE, DEBUG, INFORMATION, WARNING, ERROR;
 
-    private int priority;
-
-    private LogLevel(int priority) {
-        this.priority = priority;
+    @Override
+    public String toString() {
+        if(this.equals(VERBOSE)){
+            return ":V";
+        }
+        if(this.equals(DEBUG)){
+            return ":D";
+        }
+        if(this.equals(INFORMATION)){
+            return ":I";
+        }
+        if(this.equals(WARNING)){
+            return ":W";
+        }if(this.equals(ERROR)){
+            return ":E";
+        }
+        return null;
     }
 
     public List<LogLevel> getAssociatedLevelsSet() {
@@ -29,9 +40,5 @@ public enum LogLevel {
             }
         }
         return associatedLevels;
-    }
-
-    public int getPriority() {
-        return priority;
     }
 }
