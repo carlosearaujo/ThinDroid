@@ -14,26 +14,26 @@
             <intent-filter>
                 <action android:name="br.com.thindroid.ACTION_LIBRARY_START" />
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
-                    <action android:name="br.com.thindroid.scheduler.action.EXECUTE_TASK_1" />
-                    <action android:name="br.com.thindroid.scheduler.action.EXECUTE_TASK_2" />
-                    <action android:name="br.com.thindroid.scheduler.action.EXECUTE_TASK_3" />
-                    <action android:name="br.com.thindroid.scheduler.action.EXECUTE_TASK_4" />
-                    <action android:name="br.com.thindroid.scheduler.action.EXECUTE_TASK_5" />
-                    <action android:name="br.com.thindroid.scheduler.action.EXECUTE_TASK_6" />
-                    <action android:name="br.com.thindroid.scheduler.action.EXECUTE_TASK_7" />
-                    <action android:name="br.com.thindroid.scheduler.action.EXECUTE_TASK_8" />
-                    <action android:name="br.com.thindroid.scheduler.action.EXECUTE_TASK_9" />
-                    <action android:name="br.com.thindroid.scheduler.action.EXECUTE_TASK_10" />
-                    <action android:name="br.com.thindroid.scheduler.action.EXECUTE_TASK_11" />
-                    <action android:name="br.com.thindroid.scheduler.action.EXECUTE_TASK_12" />
-                    <action android:name="br.com.thindroid.scheduler.action.EXECUTE_TASK_13" />
-                    <action android:name="br.com.thindroid.scheduler.action.EXECUTE_TASK_14" />
-                    <action android:name="br.com.thindroid.scheduler.action.EXECUTE_TASK_15" />
-                    <action android:name="br.com.thindroid.scheduler.action.EXECUTE_TASK_16" />
-                    <action android:name="br.com.thindroid.scheduler.action.EXECUTE_TASK_17" />
-                    <action android:name="br.com.thindroid.scheduler.action.EXECUTE_TASK_18" />
-                    <action android:name="br.com.thindroid.scheduler.action.EXECUTE_TASK_19" />
-                    <action android:name="br.com.thindroid.scheduler.action.EXECUTE_TASK_20" />
+                <action android:name="br.com.thindroid.scheduler.action.EXECUTE_TASK_1" />
+                <action android:name="br.com.thindroid.scheduler.action.EXECUTE_TASK_2" />
+                <action android:name="br.com.thindroid.scheduler.action.EXECUTE_TASK_3" />
+                <action android:name="br.com.thindroid.scheduler.action.EXECUTE_TASK_4" />
+                <action android:name="br.com.thindroid.scheduler.action.EXECUTE_TASK_5" />
+                <action android:name="br.com.thindroid.scheduler.action.EXECUTE_TASK_6" />
+                <action android:name="br.com.thindroid.scheduler.action.EXECUTE_TASK_7" />
+                <action android:name="br.com.thindroid.scheduler.action.EXECUTE_TASK_8" />
+                <action android:name="br.com.thindroid.scheduler.action.EXECUTE_TASK_9" />
+                <action android:name="br.com.thindroid.scheduler.action.EXECUTE_TASK_10" />
+                <action android:name="br.com.thindroid.scheduler.action.EXECUTE_TASK_11" />
+                <action android:name="br.com.thindroid.scheduler.action.EXECUTE_TASK_12" />
+                <action android:name="br.com.thindroid.scheduler.action.EXECUTE_TASK_13" />
+                <action android:name="br.com.thindroid.scheduler.action.EXECUTE_TASK_14" />
+                <action android:name="br.com.thindroid.scheduler.action.EXECUTE_TASK_15" />
+                <action android:name="br.com.thindroid.scheduler.action.EXECUTE_TASK_16" />
+                <action android:name="br.com.thindroid.scheduler.action.EXECUTE_TASK_17" />
+                <action android:name="br.com.thindroid.scheduler.action.EXECUTE_TASK_18" />
+                <action android:name="br.com.thindroid.scheduler.action.EXECUTE_TASK_19" />
+                <action android:name="br.com.thindroid.scheduler.action.EXECUTE_TASK_20" />
             </intent-filter>
         </receiver>
 

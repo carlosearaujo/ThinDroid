@@ -16,4 +16,5 @@ public @interface AlarmTask{
 
     long interval() default INFINITE;
     boolean wakeUp() default false;
+    boolean quietly() default true;
 }

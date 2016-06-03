@@ -24,6 +24,7 @@ public class Task implements Serializable{
     long alarmInterval;
     boolean wakeUp;
     String taskAction;
+    boolean quietly;
 
     public Task(Method method, AlarmTask alarmTask, String taskAction)  {
         this.method = method;
@@ -32,6 +33,7 @@ public class Task implements Serializable{
         this.taskAction = taskAction;
         this.methodName = method.getName();
         this.className = getTargetClass();
+        this.quietly = alarmTask.quietly();
     }
 
     public Task() {
