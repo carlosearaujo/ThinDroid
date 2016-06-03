@@ -179,9 +179,6 @@ public class RemoteLog extends GenericDao<RemoteLog> {
     }
 
     private static void save(LogLevel logLevel, String tag, Exception ex) {
-        if(ex == null){
-            throw new IllegalArgumentException("Exception cannot be null");
-        }
         save(logLevel, tag, Log.getStackTraceString(ex));
     }
 
@@ -191,9 +188,12 @@ public class RemoteLog extends GenericDao<RemoteLog> {
 
     @SuppressWarnings("WrongConstant")
     private static void save(LogLevel logLevel, String tag, String message){
-        Log.println(logLevel.getPriority(), tag, message);
-        RemoteLog remoteLog = new RemoteLog(logLevel, tag, message, System.currentTimeMillis());
-        remoteLog.createOrUpdate();
+        try {
+            Log.println(logLevel.getPriority(), tag, message);
+            RemoteLog remoteLog = new RemoteLog(logLevel, tag, message, System.currentTimeMillis());
+            remoteLog.createOrUpdate();
+        }
+        catch (Exception ex){}
     }
     //endregion
 
