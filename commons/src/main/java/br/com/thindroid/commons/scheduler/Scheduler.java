@@ -4,6 +4,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v4.content.WakefulBroadcastReceiver;
@@ -20,6 +21,7 @@ import br.com.thindroid.annotations.AnnotationResolver;
 import br.com.thindroid.commons.Application;
 import br.com.thindroid.commons.log.nativelogs.LogColetorReceiver;
 
+import static android.content.Context.MODE_PRIVATE;
 import static br.com.thindroid.commons.Application.getContext;
 
 /**
@@ -71,7 +73,7 @@ public class Scheduler extends WakefulBroadcastReceiver {
         Iterator<Task> iterator = tasks.iterator();
         while (iterator.hasNext()){
             Task task = iterator.next();
-            if(alarmUp(task)){
+            if(alarmUp(task) && !taskParamChange(task)){
                 iterator.remove();
             }
         }
@@ -138,7 +140,6 @@ public class Scheduler extends WakefulBroadcastReceiver {
             }
             else{
                 tasks.add(new Task(method, alarmTask, getNextActionAvailable()));
-                return true;
             }
         }
         return false;
@@ -154,5 +155,25 @@ public class Scheduler extends WakefulBroadcastReceiver {
 
     private boolean isAlarmCall(String action) {
         return !(Intent.ACTION_BOOT_COMPLETED.equals(action) || Application.ACTION_LIBRARY_START.equals(action));
+    }
+
+    private boolean taskParamChange(Task task){
+        boolean result = false;
+        SharedPreferences preferences = getPreferences();
+        long lastTime = preferences.getLong(task.getIdentifier(), -1);
+        if(lastTime != task.alarmInterval){
+            result = true;
+        }
+        preferences.edit().putLong(task.getIdentifier(), task.alarmInterval).commit();
+        return result;
+    }
+
+    private SharedPreferences getPreferences() {
+        return Application.getContext().getSharedPreferences(Scheduler.class.getSimpleName(), MODE_PRIVATE);
+    }
+
+    private void cancelAlarm(Context context, String action) {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        alarmManager.cancel(PendingIntent.getBroadcast(context, 0, new Intent(action), PendingIntent.FLAG_UPDATE_CURRENT));
     }
 }

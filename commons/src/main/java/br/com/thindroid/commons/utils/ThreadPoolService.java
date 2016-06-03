@@ -10,6 +10,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import br.com.thindroid.commons.scheduler.Scheduler;
+
 /**
  * Created by Carlos on 09/03/2016.
  */
@@ -21,17 +23,14 @@ public abstract class ThreadPoolService extends Service {
 
     private ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(POOL_SIZE, 3 * POOL_SIZE, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
     private Handler mHandler;
-    private PowerManager.WakeLock wakeLock;
-    private boolean wakeUp = false;
 
-    public ThreadPoolService(boolean wakeUp){
-        this.wakeUp = wakeUp;
-    }
+    public ThreadPoolService(){}
 
     @Override
     public synchronized int onStartCommand(Intent intent, int flags, int startId) {
-        configureService(intent);
+        configureService();
         executeTask(intent);
+        Scheduler.completeWakefulIntent(intent);
         return START_NOT_STICKY;
     }
 
@@ -50,14 +49,9 @@ public abstract class ThreadPoolService extends Service {
         });
     }
 
-    private void configureService(Intent intent) {
+    private void configureService() {
         if(mHandler == null) {
             mHandler = new Handler();
-            Log.d(TAG, "Starting Service");
-            if(wakeUp && (wakeLock == null || !wakeLock.isHeld())) {
-                wakeLock = ((PowerManager) getSystemService(POWER_SERVICE)).newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
-                wakeLock.acquire();
-            }
             waitEmptyPool();
         }
     }
@@ -70,16 +64,9 @@ public abstract class ThreadPoolService extends Service {
         if (threadPoolExecutor.getActiveCount() == 0) {
             threadPoolExecutor.shutdownNow();
             stopSelf();
-            onFinish();
             return true;
         }
         return false;
-    }
-
-    protected void onFinish() {
-        if(wakeLock.isHeld()){
-            wakeLock.release();
-        }
     }
 
     public abstract void executeOnPool(Intent intent);
