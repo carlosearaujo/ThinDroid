@@ -13,6 +13,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 
 import br.com.thindroid.commons.Application;
+import br.com.thindroid.commons.log.RemoteLog;
 import br.com.thindroid.commons.utils.ThreadPoolService;
 
 
@@ -37,7 +38,7 @@ public class TaskExecutor extends ThreadPoolService {
         }
         catch (Exception ex){
             if(task.quietly) {
-                Log.w(Scheduler.TAG, "Sync error. Task: " + task.getIdentifier(), ex);
+                RemoteLog.w(Scheduler.TAG + " Sync error. Task: " + task.getIdentifier(), ex);
             }
             else{
                 throw new RuntimeException(ex);

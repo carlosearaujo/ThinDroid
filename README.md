@@ -45,38 +45,12 @@ Logcoletor: Request Logcat logs remotely by Loglevel and date range.
 
 DataMerge: Merge your WebService data with Local data.
 
-<<<<<<< HEAD
-=======
+
 **And More...[In documentation process]**
 
->>>>>>> fb8c2c8b76db17f02f9c1b2f6549d6a46e073f01
 # Getting start:
 
-####Adding main library:
-######Add on toplevel build.gradle:
-
-    ```
-    allprojects {
-        repositories {
-            jcenter()
-            maven{
-                url 'https://dl.bintray.com/carlosearaujo/maven/'
-            }
-        }
-    }
-    ```
-
-######And on module build.gradle:
-    ```
-    dependencies {
-      ...
-      compile('org.java.thindroid:commons:1.0.0')
-    }
-    ```
-    
-####Adding compiler module (If you are using annotations(like AlarmTask))
-  
-  Add apt plugin on toplevel build.gradle:
+  Add apt plugin on 'toplevel' build.gradle:
   
   ```
   dependencies {
@@ -84,6 +58,16 @@ DataMerge: Merge your WebService data with Local data.
   	classpath 'com.neenbedankt.gradle.plugins:android-apt:1.4'
   }
   ```
+
+######Add on 'module level' build.gradle:
+    ```
+    dependencies {
+      ...
+      compile 'br.com.thindroid:commons:0.1.0'
+    }
+    ```
+    
+####Adding compiler module
   
   Copy compiler-annotations module:
 
