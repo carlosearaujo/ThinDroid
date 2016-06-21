@@ -83,9 +83,10 @@ DataMerge: Merge your WebService data with Local data.
   apt project(':annotations-compiler') 
   ```
   
-  ```
+  
   Add compiler module on settings.gradle:
 
+  ```
   include ':app', ':annotations-compiler'
   ```
 
