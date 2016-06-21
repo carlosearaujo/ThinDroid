@@ -95,3 +95,12 @@ Manifest.xml:
         android:name=".SampleApplication">
 ...
 ```
+
+```
+settings.gradle (Add compiler module):
+
+include ':app', ':annotations-compiler'
+
+
+```
+
