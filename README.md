@@ -63,7 +63,7 @@ DataMerge: Merge your WebService data with Local data.
     ```
     dependencies {
       ...
-      compile 'br.com.thindroid:commons:0.1.0'
+      compile 'br.com.thindroid:commons:0.1.1'
     }
     ```
     
@@ -79,13 +79,13 @@ DataMerge: Merge your WebService data with Local data.
   apply plugin: 'com.neenbedankt.android-apt'
   
   ...
-  //Resolve annotations on compilation time - add this line if you are using AlarmTask annotation
+  //Add annotations-compiler to resolve annotations on compilation time
   apt project(':annotations-compiler') 
   ```
 
 ##Extends 'Application' class and add on Manifest:
 ```
-public class SampleApplication extends org.java.thindroid.commons.Application {
+public class SampleApplication extends br.com.thindroid.commons.Application {
 }
 ```
 
