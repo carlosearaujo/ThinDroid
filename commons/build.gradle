@@ -29,7 +29,7 @@ ext {
     libraryDescription = 'ThinDroid Commons'
 
     siteUrl = 'http://thindroid.com.br'
-    gitUrl = 'https://github.com/carlosedinazioaraujo/ThinDroid'
+    gitUrl = 'https://github.com/carlosearaujo/ThinDroid'
 
     libraryVersion = '0.1.1'
 
