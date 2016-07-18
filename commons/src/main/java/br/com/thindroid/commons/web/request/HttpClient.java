@@ -1,13 +1,16 @@
 package br.com.thindroid.commons.web.request;
 
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.conn.ClientConnectionManager;
@@ -112,13 +115,8 @@ public class HttpClient {
     }
 
     public static HttpUriRequest buildRequest(String urlRequest, HttpMethod method, List<NameValuePair> params, RequestBody requestBody) {
-        HttpUriRequest request = null;
-        if (method == HttpMethod.POST) {
-            request = buildPost(urlRequest, params, requestBody);
-        } else if (method == HttpMethod.GET) {
-            String queryParams = params != null ? "?" + URLEncodedUtils.format(params, "utf-8") : "";
-            request = new HttpGet(urlRequest + queryParams);
-        }
+        HttpMethodResolver resolver =   new HttpMethodResolverFactory().getHttpMethodResolver(method);
+        HttpUriRequest request = resolver.buildRequest(urlRequest, params, requestBody);
         setContentType(requestBody, request);
         return request;
     }
@@ -129,36 +127,6 @@ public class HttpClient {
                 request.addHeader("Content-Type", requestBody.contentType.toString());
             } else {
                 request.addHeader("Content-Type", MediaType.APPLICATION_FORM_URLENCODED_VALUE);
-            }
-        }
-    }
-
-    private static HttpUriRequest buildPost(String urlRequest, List<NameValuePair> params, RequestBody requestBody) {
-        HttpPost postRequest = new HttpPost(urlRequest);
-        try {
-            addRequestBody(requestBody, postRequest);
-            addRequestParams(params, postRequest);
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
-        return postRequest;
-    }
-
-    private static void addRequestParams(List<NameValuePair> params, HttpPost postRequest) {
-        if(params != null) {
-            for(NameValuePair param : params){
-                postRequest.getParams().setParameter(param.getName(), param.getValue());
-            }
-        }
-    }
-
-    private static void addRequestBody(RequestBody requestBody, HttpPost postRequest) throws UnsupportedEncodingException {
-        if(requestBody != null){
-            if(MediaType.APPLICATION_FORM_URLENCODED.equals(requestBody.contentType)){
-                postRequest.setEntity(new UrlEncodedFormEntity(requestBody.params, "utf-8"));
-            }
-            else {
-                postRequest.setEntity(new ByteArrayEntity(requestBody.value.getBytes("utf-8")));
             }
         }
     }
