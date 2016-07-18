@@ -31,7 +31,7 @@ ext {
     siteUrl = 'http://thindroid.com.br'
     gitUrl = 'https://github.com/carlosearaujo/ThinDroid'
 
-    libraryVersion = '0.1.1'
+    libraryVersion = '0.1.2'
 
     developerId = 'carlosearaujo'
     developerName = 'Carlos Edinazio Araujo'

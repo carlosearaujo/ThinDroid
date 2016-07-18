@@ -10,6 +10,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import br.com.thindroid.commons.log.RemoteLog;
 import br.com.thindroid.commons.scheduler.Scheduler;
 
 /**
@@ -28,9 +29,14 @@ public abstract class ThreadPoolService extends Service {
 
     @Override
     public synchronized int onStartCommand(Intent intent, int flags, int startId) {
-        configureService();
-        executeTask(intent);
-        Scheduler.completeWakefulIntent(intent);
+        try {
+            configureService();
+            executeTask(intent);
+            Scheduler.completeWakefulIntent(intent);
+        }
+        catch (Exception ex){
+            RemoteLog.w(ThreadPoolService.class, ex);
+        }
         return START_NOT_STICKY;
     }
 
